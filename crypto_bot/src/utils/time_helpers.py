@@ -2,10 +2,10 @@ from __future__ import annotations
 
 """Helpers for working with timestamps and timeframes."""
 
-from datetime import datetime, timedelta, timezone
-from typing import Callable, TypeVar, Any
 import asyncio
 import time
+from datetime import datetime, timezone
+from typing import Any, Callable, TypeVar
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -60,6 +60,12 @@ def timestamp_to_datetime(timestamp_ms: int) -> datetime:
     """Convert milliseconds timestamp to timezone-aware ``datetime``."""
 
     return datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc)
+
+
+def get_current_timestamp() -> int:
+    """Return current UTC timestamp in seconds."""
+
+    return int(time.time())
 
 
 def measure_execution_time(func: F) -> F:
