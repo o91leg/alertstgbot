@@ -26,6 +26,6 @@ class BinanceConfig(BaseSettings):
 
 
 def get_binance_config() -> BinanceConfig:
-    """Return configuration instance."""
+    """Get Binance configuration instance."""
 
     return BinanceConfig()

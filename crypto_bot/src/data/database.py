@@ -61,6 +61,14 @@ async def close_database() -> None:
         _engine = None
 
 
+def get_engine() -> AsyncEngine:
+    """Get the current database engine."""
+    global _engine
+    if _engine is None:
+        raise RuntimeError("Database is not initialized")
+    return _engine
+
+
 def get_sessionmaker() -> async_sessionmaker[AsyncSession]:
     if _sessionmaker is None:
         raise RuntimeError("Database is not initialized")

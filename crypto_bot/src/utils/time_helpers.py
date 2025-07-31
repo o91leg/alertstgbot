@@ -62,6 +62,12 @@ def timestamp_to_datetime(timestamp_ms: int) -> datetime:
     return datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc)
 
 
+def format_datetime(dt: datetime) -> str:
+    """Format ``datetime`` to human-readable string in UTC."""
+
+    return dt.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+
 def get_current_timestamp() -> int:
     """Return current UTC timestamp in seconds."""
 

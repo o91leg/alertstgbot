@@ -8,7 +8,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.ata.repositories.user_pair_repository import UserPairRepository
+from src.data.repositories.user_pair_repository import UserPairRepository
 from src.services.websocket.stream_manager import StreamManager
 
 remove_pair_router = Router()

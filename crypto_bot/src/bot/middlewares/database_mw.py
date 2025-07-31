@@ -8,9 +8,9 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from data.database import get_engine
-from utils.logger import LoggerMixin
-from utils.performance_utils import TimingContext
+from src.data.database import get_engine
+from src.utils.logger import LoggerMixin
+from src.utils.performance_utils import TimingContext
 
 
 class DatabaseMiddleware(BaseMiddleware, LoggerMixin):
