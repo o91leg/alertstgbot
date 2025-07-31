@@ -244,6 +244,8 @@ temp/
 
 # Кеш
 cache/
+!crypto_bot/src/services/cache/
+!crypto_bot/src/services/cache/**
 .cache/
 *.cache
 
