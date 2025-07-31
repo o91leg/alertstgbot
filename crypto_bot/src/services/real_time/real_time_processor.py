@@ -6,6 +6,7 @@ from typing import Any, Dict, Tuple
 from services.indicators.rsi_calculator import RSICalculator
 from services.indicators.ema_calculator import EMACalculator
 from services.real_time.performance_monitor import PerformanceMonitor
+from services.signals.signal_aggregator import signal_aggregator, SignalAggregator
 from utils.logger import LoggerMixin
 from utils.performance_utils import TimingContext
 from utils.constants import EMA_PERIODS
@@ -19,12 +20,15 @@ class RealTimeProcessor(LoggerMixin):
         rsi_calculator: RSICalculator,
         ema_calculator: EMACalculator,
         performance_monitor: PerformanceMonitor,
+        signal_aggregator: SignalAggregator = signal_aggregator,
     ) -> None:
         super().__init__()
         self.rsi_calculator = rsi_calculator
         self.ema_calculator = ema_calculator
         self.performance_monitor = performance_monitor
+        self.signal_aggregator = signal_aggregator
         self.processing_times: list[int] = []
+        self.signal_times: list[int] = []
 
     async def start(self) -> None:
         self.logger.info("real_time_processor_started")
@@ -32,7 +36,9 @@ class RealTimeProcessor(LoggerMixin):
     async def stop(self) -> None:
         self.logger.info("real_time_processor_stopped")
 
-    async def process_websocket_data(self, candle: Dict[str, Any]) -> Dict[str, Any]:
+    async def process_websocket_data(
+        self, candle: Dict[str, Any], session: Any | None = None
+    ) -> Dict[str, Any]:
         """Process incoming candle data and update indicators."""
 
         symbol = candle["symbol"]
@@ -46,7 +52,9 @@ class RealTimeProcessor(LoggerMixin):
                 self._update_ema_real_time(symbol, timeframe, price)
             )
             rsi_result, ema_result = await asyncio.gather(rsi_task, ema_task)
-            signals = await self._check_signal_conditions(symbol, timeframe, rsi_result, ema_result)
+            signals = await self._generate_real_time_notifications(
+                session, symbol, timeframe, price, rsi_result, ema_result
+            )
         self.processing_times.append(int(timer.elapsed_ms))
         return {
             "rsi": rsi_result,
@@ -67,15 +75,35 @@ class RealTimeProcessor(LoggerMixin):
             symbol, timeframe, price, EMA_PERIODS
         )
 
-    async def _check_signal_conditions(
+    async def _generate_real_time_notifications(
         self,
+        session: Any | None,
         symbol: str,
         timeframe: str,
+        price: float,
         rsi_result: Tuple[float | None, int],
         ema_result: Dict[int, Tuple[float | None, int]],
-    ) -> Any:
-        # Placeholder for signal generation logic
-        return None
+    ) -> int:
+        candle_data = {
+            "rsi": rsi_result[0],
+            "ema": {p: v[0] for p, v in ema_result.items()},
+            "price": price,
+            "processing_time_ms": rsi_result[1],
+        }
+        count = await self.signal_aggregator.process_candle_update_real_time(
+            session, symbol, timeframe, candle_data
+        )
+        self.signal_times.append(count)
+        return count
+
+    def get_signal_generation_stats(self) -> Dict[str, float]:
+        if not self.signal_times:
+            return {}
+        avg = sum(self.signal_times) / len(self.signal_times)
+        return {"avg_signals": avg}
+
+    def validate_total_processing_time(self, elapsed_ms: int) -> bool:
+        return elapsed_ms <= 1000
 
     def get_processing_performance_stats(self) -> Dict[str, Any]:
         if not self.processing_times:

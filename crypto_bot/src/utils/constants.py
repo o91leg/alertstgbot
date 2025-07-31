@@ -21,6 +21,25 @@ REAL_TIME_CACHE_SIZES = {
 }
 
 
+# RSI zones used for signal generation
+RSI_ZONES: Dict[str, tuple[int, int]] = {
+    "strong_oversold": (0, 20),
+    "medium_oversold": (20, 25),
+    "normal_oversold": (25, 30),
+    "neutral": (30, 70),
+    "normal_overbought": (70, 75),
+    "medium_overbought": (75, 80),
+    "strong_overbought": (80, 100),
+}
+
+# Minimum number of seconds that must pass before sending
+# another signal of the same type for a user.
+SIGNAL_REPEAT_INTERVALS: Dict[str, int] = {
+    "rsi": 5 * 60,
+    "ema": 10 * 60,
+}
+
+
 def get_real_time_target(operation: str) -> int:
     return INDICATOR_CALCULATION_TIMEOUTS.get(operation, 0)
 

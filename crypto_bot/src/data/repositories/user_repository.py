@@ -5,10 +5,11 @@ from __future__ import annotations
 from typing import List, Optional
 
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base_repository import BaseRepository
-from data.models import User
+from data.models import User, UserPair, Pair
 
 
 class UserRepository(BaseRepository[User]):
@@ -31,4 +32,22 @@ class UserRepository(BaseRepository[User]):
         result = await session.execute(
             select(User).where(User.real_time_enabled.is_(True))
         )
+        return result.scalars().all()
+
+    async def get_users_with_pair_and_timeframe(
+        self, session: AsyncSession, symbol: str, timeframe: str
+    ) -> List[User]:
+        stmt = (
+            select(User)
+            .join(UserPair, User.id == UserPair.user_id)
+            .join(Pair, Pair.id == UserPair.pair_id)
+            .options(joinedload(User.user_pairs))
+            .where(
+                Pair.symbol == symbol,
+                User.notifications_enabled.is_(True),
+                User.is_active.is_(True),
+                UserPair.timeframes.contains({timeframe: True}),
+            )
+        )
+        result = await session.execute(stmt)
         return result.scalars().all()
