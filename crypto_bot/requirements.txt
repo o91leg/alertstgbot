@@ -1,5 +1,4 @@
-# Основные зависимости
-aigram==3.4.1
+aiogram==3.4.1
 sqlalchemy[asyncio]==2.0.25
 asyncpg==0.29.0
 redis[hiredis]==5.0.1
