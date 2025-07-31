@@ -6,11 +6,11 @@ import asyncio
 from decimal import Decimal
 from typing import Any, Dict
 
-from services.cache.candle_cache import CandleCache
-from utils.logger import LoggerMixin
-from utils.time_helpers import timestamp_to_datetime
-from utils.validators import validate_binance_kline_data_detailed
-from utils.performance_utils import measure_time
+from src.services.cache.candle_cache import CandleCache
+from src.utils.logger import LoggerMixin
+from src.utils.time_helpers import timestamp_to_datetime
+from src.utils.validators import validate_binance_kline_data_detailed
+from src.utils.performance_utils import measure_time
 
 
 class BinanceDataProcessor(LoggerMixin):

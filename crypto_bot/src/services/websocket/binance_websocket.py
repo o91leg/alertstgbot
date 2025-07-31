@@ -10,10 +10,10 @@ from typing import Awaitable, Callable, List
 import websockets
 from websockets import WebSocketClientProtocol
 
-from config.binance_config import BinanceConfig
-from utils.logger import LoggerMixin
-from utils.time_helpers import get_high_precision_timestamp, get_time_since_ms
-from utils.exceptions import WebSocketConnectionError
+from src.config.binance_config import BinanceConfig
+from src.utils.logger import LoggerMixin
+from src.utils.time_helpers import get_high_precision_timestamp, get_time_since_ms
+from src.utils.exceptions import WebSocketConnectionError
 
 
 class ConnectionState(Enum):

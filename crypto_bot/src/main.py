@@ -15,7 +15,6 @@ from src.bot.handlers.add_pair.add_pair_handler import register_add_pair_handler
 from src.bot.handlers.my_pairs.my_pairs_handler import register_my_pairs_handlers
 from src.bot.handlers.remove_pair_handler import register_remove_pair_handlers
 from src.bot.handlers.start_handler import register_start_handlers
-from src.bot.handlers.start_handler import stream_manager as start_stream_manager
 from src.bot.middlewares.database_mw import DatabaseMiddleware
 from src.config.bot_config import BotConfig
 from src.services.websocket.stream_manager import StreamManager
@@ -45,8 +44,6 @@ stream_manager: Optional[StreamManager] = None
 telegram_sender: Optional[object] = None
 real_time_processor: Optional[object] = None
 performance_monitor: Optional[object] = None
-
-stream_manager = start_stream_manager
 
 
 async def create_bot() -> Bot:
@@ -87,16 +84,29 @@ def setup_signal_handlers() -> None:
 
 
 async def init_services() -> None:
-    """Инициализировать все сервисы: БД, Redis, WebSocket,
-    уведомления + реальное время"""
+    """Инициализировать все сервисы: БД, Redis, WebSocket, уведомления + реальное время"""
     print("🔧 Initializing services...")
 
+    global stream_manager, telegram_sender, real_time_processor, performance_monitor
+
     try:
-        # Инициализация будет добавлена в следующих блоках
-        print("📊 Database initialization - TODO")
-        print("🗄️ Redis initialization - TODO")
-        print("🌐 WebSocket initialization - TODO")
-        print("🔥 Real-time services initialization - TODO")
+        # Инициализация БД
+        from src.data.database import init_database
+        await init_database()
+        print("✅ Database initialized")
+
+        # Инициализация Redis
+        from src.data.redis_client import init_redis
+        await init_redis()
+        print("✅ Redis initialized")
+
+        # Заглушки для сервисов (будут реализованы позже)
+        stream_manager = None
+        telegram_sender = None
+        real_time_processor = None
+        performance_monitor = None
+
+        print("✅ All services initialized (stubs)")
 
     except Exception as e:
         print(f"❌ Failed to initialize services: {e}")
@@ -120,8 +130,22 @@ async def shutdown_services() -> None:
 async def check_connections() -> bool:
     """Проверить подключения к БД и Redis"""
     print("🔍 Checking connections...")
-    # Будет реализовано в следующих блоках
-    return True
+
+    try:
+        # Проверка БД
+        from src.data.database import test_connection as test_db
+        db_ok = await test_db()
+        print(f"📊 Database: {'✅ OK' if db_ok else '❌ Failed'}")
+
+        # Проверка Redis
+        from src.data.redis_client import test_connection as test_redis
+        redis_ok = await test_redis()
+        print(f"🗄️ Redis: {'✅ OK' if redis_ok else '❌ Failed'}")
+
+        return db_ok and redis_ok
+    except Exception as e:
+        print(f"❌ Connection check failed: {e}")
+        return False
 
 
 async def check_real_time_performance() -> dict:
@@ -155,15 +179,11 @@ async def main() -> None:
         if not connections_ok:
             raise RuntimeError("Не удалось установить подключения к внешним сервисам")
 
-        # Запуск основного цикла (пока заглушка)
-        print("🎯 Starting main application loop...")
-        print("⚠️ Main loop implementation - TODO in next blocks")
+        print("🎯 Starting bot polling...")
 
-        # Ждем сигнал завершения
+        # Запуск бота
         try:
-            while True:
-                await asyncio.sleep(1)
-                # Здесь будет основной цикл обработки
+            await dp.start_polling(bot)
         except KeyboardInterrupt:
             print("🛑 Received shutdown signal")
 

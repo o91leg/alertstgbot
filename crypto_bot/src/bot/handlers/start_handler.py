@@ -17,6 +17,7 @@ from src.data.repositories.user_pair_repository import UserPairRepository
 from src.data.repositories.user_repository import UserRepository
 from src.services.websocket.stream_manager import StreamManager
 from src.bot.keyboards.main_menu_kb import get_main_menu_keyboard
+from src.config.binance_config import get_binance_config
 
 start_router = Router()
 

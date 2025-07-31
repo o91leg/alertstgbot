@@ -7,10 +7,10 @@ from typing import Dict, Iterable, List, Set
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from config.binance_config import BinanceConfig
-from data.repositories.user_pair_repository import UserPairRepository
-from utils.logger import LoggerMixin
-from utils.performance_utils import TimingContext
+from src.config.binance_config import BinanceConfig
+from src.data.repositories.user_pair_repository import UserPairRepository
+from src.utils.logger import LoggerMixin
+from src.utils.performance_utils import TimingContext
 from .binance_websocket import BinanceWebSocketClient
 from .binance_data_processor import BinanceDataProcessor
 
