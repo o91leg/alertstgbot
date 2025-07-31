@@ -8,8 +8,8 @@ from typing import Any, Dict
 
 import psutil
 
-from data.redis_client import get_redis
-from utils.time_helpers import get_current_timestamp
+from src.data.redis_client import get_redis
+from src.utils.time_helpers import get_current_timestamp
 
 
 @dataclass

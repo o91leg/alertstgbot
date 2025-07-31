@@ -6,11 +6,11 @@ from typing import Any, Dict
 
 import httpx
 
-from config.bot_config import BotConfig
-from data.models import Pair
-from data.repositories.pair_repository import PairRepository
-from data.repositories.user_pair_repository import UserPairRepository
-from utils.validators import normalize_trading_symbol, validate_trading_pair_symbol
+from src.config.bot_config import BotConfig
+from src.data.models import Pair
+from src.data.repositories.pair_repository import PairRepository
+from src.data.repositories.user_pair_repository import UserPairRepository
+from src.utils.validators import normalize_trading_symbol, validate_trading_pair_symbol
 
 config = BotConfig()
 pair_repository = PairRepository()

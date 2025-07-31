@@ -6,7 +6,7 @@ from typing import Dict
 
 from pydantic import BaseSettings, Field
 
-from utils.constants import SIGNAL_REPEAT_INTERVALS
+from src.utils.constants import SIGNAL_REPEAT_INTERVALS
 
 
 class SignalsConfig(BaseSettings):

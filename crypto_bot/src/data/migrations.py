@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from data.models import BaseModel, User, Pair
-from data.database import init_database, get_sessionmaker
+from src.data.models import BaseModel, User, Pair
+from src.data.database import init_database, get_sessionmaker
 
 
 async def create_all_tables(engine: AsyncEngine | None = None) -> None:

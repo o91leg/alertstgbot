@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Tuple
 
-from utils.logger import LoggerMixin
-from utils.performance_utils import measure_time
+from src.utils.logger import LoggerMixin
+from src.utils.performance_utils import measure_time
 
 
 class TelegramSender(LoggerMixin):

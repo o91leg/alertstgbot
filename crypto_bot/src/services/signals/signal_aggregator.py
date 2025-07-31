@@ -6,11 +6,11 @@ from typing import Any, Dict
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.signals.rsi_signals import rsi_signal_generator, RSISignalGenerator
-from services.signals.ema_signals import ema_signal_generator, EMASignalGenerator
-from utils.logger import LoggerMixin
-from utils.performance_utils import measure_time
-from utils.constants import get_real_time_target
+from src.services.signals.rsi_signals import rsi_signal_generator, RSISignalGenerator
+from src.services.signals.ema_signals import ema_signal_generator, EMASignalGenerator
+from src.utils.logger import LoggerMixin
+from src.utils.performance_utils import measure_time
+from src.utils.constants import get_real_time_target
 
 
 class SignalAggregator(LoggerMixin):

@@ -7,7 +7,7 @@ from typing import Optional
 import asyncio
 import redis.asyncio as redis
 
-from config.redis_config import get_redis_config
+from src.config.redis_config import get_redis_config
 
 _redis: Optional[redis.Redis] = None
 

@@ -8,7 +8,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.bot_config import BotConfig
+from src.config.bot_config import BotConfig
 from .add_pair_logic import execute_add_pair, process_symbol_input
 
 add_pair_router = Router()

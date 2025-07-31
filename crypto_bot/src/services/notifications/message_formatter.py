@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-from utils.constants import get_performance_emoji
+from src.utils.constants import get_performance_emoji
 
 
 class MessageFormatter:

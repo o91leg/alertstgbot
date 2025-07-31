@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple
 
-from utils.logger import LoggerMixin
+from src.utils.logger import LoggerMixin
 
 
 class EMASignalGenerator(LoggerMixin):

@@ -8,7 +8,7 @@ from time import perf_counter
 from sqlalchemy import update, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data.models import BaseModel
+from src.data.models import BaseModel
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
 

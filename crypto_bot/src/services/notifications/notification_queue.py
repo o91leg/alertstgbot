@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any, Dict, Tuple
 
-from utils.logger import LoggerMixin
+from src.utils.logger import LoggerMixin
 
 
 class NotificationQueue(LoggerMixin):

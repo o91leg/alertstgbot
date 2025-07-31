@@ -9,7 +9,7 @@ import gzip
 import orjson
 from redis.asyncio import Redis
 
-from utils.time_helpers import get_current_timestamp, get_high_precision_timestamp
+from src.utils.time_helpers import get_current_timestamp, get_high_precision_timestamp
 
 
 class IndicatorCache:

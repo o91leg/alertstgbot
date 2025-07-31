@@ -5,7 +5,7 @@ from __future__ import annotations
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from utils.constants import EMOJI
+from src.utils.constants import EMOJI
 
 
 def create_pair_management_keyboard(pair_id: int) -> InlineKeyboardMarkup:

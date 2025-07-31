@@ -7,13 +7,13 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data.repositories.signal_repository import SignalRepository
-from data.repositories.user_repository import UserRepository
-from services.signals.anti_spam import AntiSpamManager
-from services.notifications.notification_queue import NotificationQueue
-from utils.logger import LoggerMixin
-from utils.performance_utils import measure_time
-from utils.constants import RSI_ZONES
+from src.data.repositories.signal_repository import SignalRepository
+from src.data.repositories.user_repository import UserRepository
+from src.services.signals.anti_spam import AntiSpamManager
+from src.services.notifications.notification_queue import NotificationQueue
+from src.utils.logger import LoggerMixin
+from src.utils.performance_utils import measure_time
+from src.utils.constants import RSI_ZONES
 
 
 class RSIZone(Enum):

@@ -8,7 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base_repository import BaseRepository
-from data.models import SignalHistory
+from src.data.models import SignalHistory
 
 
 class SignalRepository(BaseRepository[SignalHistory]):

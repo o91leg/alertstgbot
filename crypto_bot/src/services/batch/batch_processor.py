@@ -10,9 +10,9 @@ import orjson
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert
 
-from data.redis_client import get_redis
-from utils.logger import LoggerMixin
-from utils.time_helpers import get_current_timestamp
+from src.data.redis_client import get_redis
+from src.utils.logger import LoggerMixin
+from src.utils.time_helpers import get_current_timestamp
 
 
 class BatchOperation(Enum):

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from utils.time_helpers import format_datetime
+from src.utils.time_helpers import format_datetime
 
 
 def create_pairs_list_message(user_pairs: List[Dict[str, Any]]) -> str:

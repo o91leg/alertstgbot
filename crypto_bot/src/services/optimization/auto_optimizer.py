@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict
 
-from services.monitoring.metrics_collector import MetricsCollector
+from src.services.monitoring.metrics_collector import MetricsCollector
 
 
 @dataclass

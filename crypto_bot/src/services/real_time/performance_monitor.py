@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from utils.logger import LoggerMixin
-from utils.constants import INDICATOR_CALCULATION_TIMEOUTS, PERFORMANCE_ALERT_THRESHOLDS
-from utils.time_helpers import get_high_precision_timestamp, get_time_since_ms
+from src.utils.logger import LoggerMixin
+from src.utils.constants import INDICATOR_CALCULATION_TIMEOUTS, PERFORMANCE_ALERT_THRESHOLDS
+from src.utils.time_helpers import get_high_precision_timestamp, get_time_since_ms
 
 
 class PerformanceMonitor(LoggerMixin):

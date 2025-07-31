@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from utils.logger import LoggerMixin
-from utils.time_helpers import get_current_timestamp
+from src.utils.logger import LoggerMixin
+from src.utils.time_helpers import get_current_timestamp
 
 
 class CacheWarmer(LoggerMixin):

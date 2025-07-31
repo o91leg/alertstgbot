@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base_repository import BaseRepository
-from data.models import User, UserPair, Pair
+from src.data.models import User, UserPair, Pair
 
 
 class UserRepository(BaseRepository[User]):

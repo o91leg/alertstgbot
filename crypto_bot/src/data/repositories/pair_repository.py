@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .base_repository import BaseRepository
-from data.models import Pair
+from src.data.models import Pair
 
 
 class PairRepository(BaseRepository[Pair]):

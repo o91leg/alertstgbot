@@ -10,13 +10,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.bot_config import BotConfig
-from data.models import User
-from data.repositories.pair_repository import PairRepository
-from data.repositories.user_pair_repository import UserPairRepository
-from data.repositories.user_repository import UserRepository
-from services.websocket.stream_manager import StreamManager
-from bot.keyboards.main_menu_kb import get_main_menu_keyboard
+from src.config.bot_config import BotConfig
+from src.data.models import User
+from src.data.repositories.pair_repository import PairRepository
+from src.data.repositories.user_pair_repository import UserPairRepository
+from src.data.repositories.user_repository import UserRepository
+from src.services.websocket.stream_manager import StreamManager
+from src.bot.keyboards.main_menu_kb import get_main_menu_keyboard
 
 start_router = Router()
 

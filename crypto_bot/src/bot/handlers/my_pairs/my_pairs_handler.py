@@ -8,7 +8,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.cache.indicator_cache import indicator_cache
+from src.services.cache.indicator_cache import indicator_cache
 from .my_pairs_formatters import (
     create_pairs_list_message,
     create_real_time_performance_message,

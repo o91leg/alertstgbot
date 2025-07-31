@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from utils.logger import LoggerMixin
+from src.utils.logger import LoggerMixin
 
 
 class DatabasePerformanceManager(LoggerMixin):

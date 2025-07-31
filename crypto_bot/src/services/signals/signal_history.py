@@ -6,8 +6,8 @@ from typing import Any, Dict, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data.repositories.signal_repository import SignalRepository
-from utils.logger import LoggerMixin
+from src.data.repositories.signal_repository import SignalRepository
+from src.utils.logger import LoggerMixin
 
 
 class SignalHistoryManager(LoggerMixin):

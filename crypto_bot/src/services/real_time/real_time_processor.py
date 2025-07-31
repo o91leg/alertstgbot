@@ -3,13 +3,13 @@ from __future__ import annotations
 import asyncio
 from typing import Any, Dict, Tuple
 
-from services.indicators.rsi_calculator import RSICalculator
-from services.indicators.ema_calculator import EMACalculator
-from services.real_time.performance_monitor import PerformanceMonitor
-from services.signals.signal_aggregator import signal_aggregator, SignalAggregator
-from utils.logger import LoggerMixin
-from utils.performance_utils import TimingContext
-from utils.constants import EMA_PERIODS
+from src.services.indicators.rsi_calculator import RSICalculator
+from src.services.indicators.ema_calculator import EMACalculator
+from src.services.real_time.performance_monitor import PerformanceMonitor
+from src.services.signals.signal_aggregator import signal_aggregator, SignalAggregator
+from src.utils.logger import LoggerMixin
+from src.utils.performance_utils import TimingContext
+from src.utils.constants import EMA_PERIODS
 
 
 class RealTimeProcessor(LoggerMixin):

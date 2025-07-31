@@ -8,8 +8,8 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data.repositories.user_pair_repository import UserPairRepository
-from services.websocket.stream_manager import StreamManager
+from src.ata.repositories.user_pair_repository import UserPairRepository
+from src.services.websocket.stream_manager import StreamManager
 
 remove_pair_router = Router()
 user_pair_repository = UserPairRepository()
