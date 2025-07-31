@@ -7,18 +7,26 @@ from typing import Optional
 import asyncio
 import redis.asyncio as redis
 
+from config.redis_config import get_redis_config
+
 _redis: Optional[redis.Redis] = None
 
 
-async def init_redis(url: str = "redis://localhost:6379/0") -> None:
-    """Initialize global Redis client."""
+async def init_redis(url: str | None = None) -> None:
+    """Initialize global Redis client with connection pooling."""
 
     global _redis
     if _redis is None:
-        _redis = redis.from_url(url, decode_responses=True)
+        config = get_redis_config()
+        pool = redis.ConnectionPool.from_url(
+            url or config.url,
+            max_connections=config.max_connections,
+            decode_responses=True,
+        )
+        _redis = redis.Redis(connection_pool=pool)
         try:
             await _redis.ping()
-        except Exception:
+        except Exception:  # pragma: no cover - network dependent
             _redis = None
             raise
 
@@ -44,4 +52,9 @@ async def test_connection() -> bool:
         await client.ping()
         return True
     except Exception:
-        return False
+        # attempt reconnection
+        try:
+            await init_redis()
+            return True
+        except Exception:  # pragma: no cover - network dependent
+            return False

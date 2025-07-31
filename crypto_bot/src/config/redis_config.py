@@ -16,6 +16,9 @@ class RedisConfig(BaseSettings):
     realtime_ttl: int = Field(default=10, description="TTL for real-time prices")
     state_ttl: int = Field(default=300, description="TTL for indicator states")
     metrics_ttl: int = Field(default=60, description="TTL for metrics data")
+    max_connections: int = Field(
+        default=20, description="Maximum Redis connections in the pool"
+    )
 
 
 def get_redis_config() -> RedisConfig:
