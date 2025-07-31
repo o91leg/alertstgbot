@@ -2,44 +2,65 @@ from __future__ import annotations
 
 """Caching of indicator values such as RSI and EMA with real-time helpers."""
 
-from typing import Any, Dict, List, Tuple
-
 import base64
 import gzip
+import logging
+from typing import Any, Dict, List, Tuple
+
 import orjson
 from redis.asyncio import Redis
-
+from src.config.redis_config import get_redis_config
 from src.utils.time_helpers import get_current_timestamp, get_high_precision_timestamp
+
+logger = logging.getLogger(__name__)
 
 
 class IndicatorCache:
     """Cache for technical indicators with batching and compression."""
 
-    def __init__(self, redis: Redis, ttl: int = 30, state_ttl: int = 300) -> None:
+    def __init__(
+        self,
+        redis: Redis | None = None,
+        ttl: int | None = None,
+        state_ttl: int | None = None,
+    ) -> None:
+        """Initialize cache and Redis connection.
+
+        If no ``redis`` instance is provided, one is created from configuration.
+        """
+
+        if redis is None:
+            config = get_redis_config()
+            redis = Redis.from_url(config.url, decode_responses=True)
+            ttl = ttl or config.indicator_ttl
+            state_ttl = state_ttl or config.state_ttl
+
         self.redis = redis
-        self.ttl = ttl
-        self.state_ttl = state_ttl
+        self.ttl = ttl or 300
+        self.state_ttl = state_ttl or 300
 
     # ------------------------------------------------------------------
     # key helpers
     def _get_rsi_key(self, symbol: str, timeframe: str, period: int) -> str:
-        return f"rsi:{symbol}:{timeframe}:{period}"
+        return ":".join(["rsi", symbol, timeframe, str(period)])
 
     def _get_ema_key(self, symbol: str, timeframe: str, period: int) -> str:
-        return f"ema:{symbol}:{timeframe}:{period}"
+        return ":".join(["ema", symbol, timeframe, str(period)])
 
     def _get_volume_key(self, symbol: str, timeframe: str) -> str:
-        return f"vol:{symbol}:{timeframe}"
+        return ":".join(["vol", symbol, timeframe])
 
     @staticmethod
     def _get_real_time_key(base: str) -> str:
         return f"{base}_rt"
 
     def _state_key(self, name: str, symbol: str, timeframe: str) -> str:
-        return f"state:{name}:{symbol}:{timeframe}"
+        return ":".join(["state", name, symbol, timeframe])
 
-    def _calc_state_key(self, indicator: str, symbol: str, timeframe: str, period: int) -> str:
-        return f"state:{indicator}:{symbol}:{timeframe}:{period}"
+    def _calc_state_key(
+        self, indicator: str, symbol: str, timeframe: str, period: int
+    ) -> str:
+        return ":".join(["state", indicator, symbol, timeframe, str(period)])
 
     # ------------------------------------------------------------------
     # serialization helpers
@@ -73,19 +94,77 @@ class IndicatorCache:
 
     # ------------------------------------------------------------------
     # basic getters/setters
-    async def get_rsi(self, symbol: str, timeframe: str, period: int) -> float | None:
-        value = await self.redis.get(self._get_rsi_key(symbol, timeframe, period))
-        return float(value) if value is not None else None
+    async def get_rsi(
+        self, symbol: str, timeframe: str, period: int = 14
+    ) -> float | None:
+        try:
+            value = await self.redis.get(self._get_rsi_key(symbol, timeframe, period))
+            return float(value) if value is not None else None
+        except Exception:
+            logger.exception(
+                "Failed to get RSI for %s %s period %s", symbol, timeframe, period
+            )
+            return None
 
-    async def set_rsi(self, symbol: str, timeframe: str, period: int, value: float) -> None:
-        await self.redis.set(self._get_rsi_key(symbol, timeframe, period), value, ex=self.ttl)
+    async def set_rsi(
+        self,
+        symbol: str,
+        timeframe: str,
+        period: int,
+        value: float,
+        ttl: int = 300,
+    ) -> None:
+        try:
+            await self.redis.set(
+                self._get_rsi_key(symbol, timeframe, period), value, ex=ttl
+            )
+        except Exception:
+            logger.exception(
+                "Failed to set RSI for %s %s period %s", symbol, timeframe, period
+            )
 
     async def get_ema(self, symbol: str, timeframe: str, period: int) -> float | None:
-        value = await self.redis.get(self._get_ema_key(symbol, timeframe, period))
-        return float(value) if value is not None else None
+        try:
+            value = await self.redis.get(self._get_ema_key(symbol, timeframe, period))
+            return float(value) if value is not None else None
+        except Exception:
+            logger.exception(
+                "Failed to get EMA for %s %s period %s", symbol, timeframe, period
+            )
+            return None
 
-    async def set_ema(self, symbol: str, timeframe: str, period: int, value: float) -> None:
-        await self.redis.set(self._get_ema_key(symbol, timeframe, period), value, ex=self.ttl)
+    async def set_ema(
+        self,
+        symbol: str,
+        timeframe: str,
+        period: int,
+        value: float,
+        ttl: int = 300,
+    ) -> None:
+        try:
+            await self.redis.set(
+                self._get_ema_key(symbol, timeframe, period), value, ex=ttl
+            )
+        except Exception:
+            logger.exception(
+                "Failed to set EMA for %s %s period %s", symbol, timeframe, period
+            )
+
+    async def get_volume_change(self, symbol: str, timeframe: str) -> float | None:
+        try:
+            value = await self.redis.get(self._get_volume_key(symbol, timeframe))
+            return float(value) if value is not None else None
+        except Exception:
+            logger.exception("Failed to get volume change for %s %s", symbol, timeframe)
+            return None
+
+    async def set_volume_change(
+        self, symbol: str, timeframe: str, value: float, ttl: int = 120
+    ) -> None:
+        try:
+            await self.redis.set(self._get_volume_key(symbol, timeframe), value, ex=ttl)
+        except Exception:
+            logger.exception("Failed to set volume change for %s %s", symbol, timeframe)
 
     # ------------------------------------------------------------------
     # real-time helpers
@@ -107,7 +186,7 @@ class IndicatorCache:
         }
         pipeline = self.redis.pipeline()
         pipeline.setex(key, ttl, self._serialize(data))
-        prev_key = f"{key}:prev"
+        prev_key = key + ":prev"
         current_value = await self.redis.get(key)
         if current_value:
             pipeline.setex(prev_key, ttl * 2, current_value)
@@ -120,7 +199,7 @@ class IndicatorCache:
         """Return current RSI, previous RSI and time difference."""
 
         key = self._get_real_time_key(self._get_rsi_key(symbol, timeframe, period))
-        prev_key = f"{key}:prev"
+        prev_key = key + ":prev"
         current_raw, prev_raw = await self.redis.mget([key, prev_key])
         if not current_raw:
             return None, None, None
@@ -128,9 +207,7 @@ class IndicatorCache:
         previous = self._deserialize(prev_raw) if prev_raw else None
         current_val = float(current["value"])
         previous_val = float(previous["value"]) if previous else None
-        time_diff = (
-            current["timestamp"] - previous["timestamp"] if previous else None
-        )
+        time_diff = current["timestamp"] - previous["timestamp"] if previous else None
         return current_val, previous_val, time_diff
 
     async def set_multiple_ema_real_time(
@@ -193,11 +270,15 @@ class IndicatorCache:
         return result
 
     # ------------------------------------------------------------------
-    async def save_indicator_state(self, name: str, symbol: str, timeframe: str, state: Dict[str, Any]) -> None:
+    async def save_indicator_state(
+        self, name: str, symbol: str, timeframe: str, state: Dict[str, Any]
+    ) -> None:
         key = self._state_key(name, symbol, timeframe)
         await self.redis.set(key, self._serialize(state), ex=self.state_ttl)
 
-    async def get_indicator_state(self, name: str, symbol: str, timeframe: str) -> Dict[str, Any] | None:
+    async def get_indicator_state(
+        self, name: str, symbol: str, timeframe: str
+    ) -> Dict[str, Any] | None:
         key = self._state_key(name, symbol, timeframe)
         data = await self.redis.get(key)
         return self._deserialize(data)
@@ -222,6 +303,10 @@ class IndicatorCache:
         return self._deserialize(data)
 
     async def invalidate_indicators(self, symbol: str, timeframe: str) -> None:
-        pattern = f"*:{symbol}:{timeframe}*"
+        pattern = "*:{symbol}:{timeframe}*".format(symbol=symbol, timeframe=timeframe)
         async for key in self.redis.scan_iter(match=pattern):
             await self.redis.delete(key)
+
+
+# Global instance
+indicator_cache = IndicatorCache()
