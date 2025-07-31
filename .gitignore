@@ -1,0 +1,476 @@
+# .gitignore для крипто-бота с реальным временем
+
+# ===============================
+# СЕКРЕТНЫЕ ДАННЫЕ И КОНФИГУРАЦИЯ
+# ===============================
+
+# Переменные окружения
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# Конфигурационные файлы с секретами
+config/secrets.py
+config/local_settings.py
+src/config/secrets.py
+src/config/local_settings.py
+
+# Токены и ключи
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+tokens/
+
+# ===============================
+# PYTHON
+# ===============================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff (если используется):
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff (если используется):
+instance/
+.webassets-cache
+
+# Scrapy stuff (если используется):
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ===============================
+# БАЗЫ ДАННЫХ
+# ===============================
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# PostgreSQL
+*.dump
+*.sql
+
+# MySQL
+*.mysql
+
+# MongoDB
+*.bson
+
+# База данных миграций
+migrations/versions/
+alembic/versions/
+
+# ===============================
+# ЛОГИ И ОТЧЕТЫ
+# ===============================
+
+# Логи приложения
+logs/
+*.log
+*.log.*
+log/
+
+# Логи производительности
+performance_logs/
+real_time_logs/
+monitoring_logs/
+
+# Отчеты
+reports/
+performance_reports/
+*.report
+*.csv
+
+# Дампы ошибок
+crash_dumps/
+*.dump
+*.dmp
+
+# ===============================
+# DOCKER И КОНТЕЙНЕРИЗАЦИЯ
+# ===============================
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+
+# Данные контейнеров
+postgres_data/
+redis_data/
+docker_volumes/
+
+# ===============================
+# ВРЕМЕННЫЕ И КЕШИРУЮЩИЕ ФАЙЛЫ
+# ===============================
+
+# Временные файлы
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Кеш
+cache/
+.cache/
+*.cache
+
+# Redis dump
+dump.rdb
+*.rdb
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# ===============================
+# IDE И РЕДАКТОРЫ
+# ===============================
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Nano
+*.save
+
+# ===============================
+# ОПЕРАЦИОННЫЕ СИСТЕМЫ
+# ===============================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===============================
+# МОНИТОРИНГ И АНАЛИТИКА
+# ===============================
+
+# Prometheus
+prometheus_data/
+*.prom
+
+# Grafana
+grafana_data/
+
+# Метрики производительности
+metrics/
+performance_data/
+benchmark_results/
+
+# New Relic
+newrelic.ini
+
+# ===============================
+# ТЕСТИРОВАНИЕ
+# ===============================
+
+# Test databases
+test.db
+test.sqlite
+test.sqlite3
+
+# Test logs
+test_logs/
+test_results/
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# ===============================
+# РАЗРАБОТКА И ДЕБАГ
+# ===============================
+
+# Профилирование
+*.prof
+profile_results/
+
+# Memory dumps
+*.hprof
+memory_dumps/
+
+# Debug файлы
+debug/
+*.debug
+
+# Локальные скрипты разработчика
+dev_scripts/
+local_scripts/
+personal/
+
+# ===============================
+# ДЕПЛОЙМЕНТ И CI/CD
+# ===============================
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes
+*.kubeconfig
+
+# Ansible
+*.retry
+
+# Build artifacts
+build/
+dist/
+
+# ===============================
+# СПЕЦИФИЧНО ДЛЯ КРИПТО-БОТА
+# ===============================
+
+# Данные бэктестинга
+backtest_data/
+historical_data/
+market_data/
+
+# Кеш индикаторов
+indicator_cache/
+rsi_cache/
+ema_cache/
+
+# Данные WebSocket
+websocket_logs/
+stream_data/
+
+# Performance benchmarks
+benchmarks/
+performance_tests/
+
+# Trading данные (если есть)
+trades/
+positions/
+portfolio/
+
+# Пользовательские данные (для разработки)
+user_data/
+test_users/
+
+# Сессии Telegram (если сохраняются)
+*.session
+sessions/
+
+# ===============================
+# ДОКУМЕНТАЦИЯ (ИСКЛЮЧЕНИЯ)
+# ===============================
+
+# Не игнорируем основную документацию
+!README.md
+!AGENTS.md
+!docs/
+!*.md
+
+# Но игнорируем автогенерируемую документацию
+docs/_build/
+docs/generated/
+auto_docs/
+
+# ===============================
+# КОНЕЦ ФАЙЛА
+# ===============================
