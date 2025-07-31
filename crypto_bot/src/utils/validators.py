@@ -67,7 +67,9 @@ def validate_rsi_value(value: float) -> bool:
 def validate_rsi_calculation_inputs(prices: List[float], period: int) -> bool:
     """Validate inputs for RSI calculation."""
 
-    return 2 <= period <= 100 and len(prices) >= period + 1 and all(p > 0 for p in prices)
+    return (
+        2 <= period <= 100 and len(prices) >= period + 1 and all(p > 0 for p in prices)
+    )
 
 
 def validate_ema_calculation_inputs(prices: List[float], period: int) -> bool:
@@ -93,3 +95,7 @@ def validate_binance_kline_data_detailed(data: Dict[str, Any]) -> bool:
 
     required_keys = {"t", "T", "o", "c", "h", "l", "v", "x"}
     return required_keys.issubset(data.keys())
+
+
+def validate_rsi_inputs(prices: List[float], period: int) -> bool:
+    return validate_rsi_calculation_inputs(prices, period)
