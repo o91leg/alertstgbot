@@ -11,14 +11,32 @@ import sys
 from typing import Optional
 
 from aiogram import Bot, Dispatcher
+from src.bot.handlers.add_pair.add_pair_handler import register_add_pair_handlers
+from src.bot.handlers.my_pairs.my_pairs_handler import register_my_pairs_handlers
+from src.bot.handlers.remove_pair_handler import register_remove_pair_handlers
+from src.bot.handlers.start_handler import register_start_handlers
+from src.bot.handlers.start_handler import stream_manager as start_stream_manager
+from src.bot.middlewares.database_mw import DatabaseMiddleware
+from src.config.bot_config import BotConfig
+from src.services.websocket.stream_manager import StreamManager
 
-from bot.handlers.add_pair.add_pair_handler import register_add_pair_handlers
-from bot.handlers.my_pairs.my_pairs_handler import register_my_pairs_handlers
-from bot.handlers.remove_pair_handler import register_remove_pair_handlers
-from bot.handlers.start_handler import register_start_handlers, stream_manager as start_stream_manager
-from bot.middlewares.database_mw import DatabaseMiddleware
-from config.bot_config import BotConfig
-from services.websocket.stream_manager import StreamManager
+try:
+    from src.config.bot_config import get_bot_config
+
+    _ = get_bot_config
+    print("✅ Config import OK")
+except ImportError as e:
+    print(f"❌ Config import failed: {e}")
+
+try:
+    from src.bot.handlers.start_handler import (
+        register_start_handlers as _register_start_handlers_test,
+    )
+
+    _ = _register_start_handlers_test
+    print("✅ Handlers import OK")
+except ImportError as e:
+    print(f"❌ Handlers import failed: {e}")
 
 # Глобальные переменные для сервисов
 bot: Optional[Bot] = None
@@ -59,6 +77,7 @@ def validate_application_config() -> None:
 
 def setup_signal_handlers() -> None:
     """Настроить обработчики системных сигналов (SIGINT, SIGTERM)"""
+
     def signal_handler(signum, frame):
         print(f"📡 Received shutdown signal: {signum}")
         sys.exit(0)
@@ -68,7 +87,8 @@ def setup_signal_handlers() -> None:
 
 
 async def init_services() -> None:
-    """Инициализировать все сервисы: БД, Redis, WebSocket, уведомления + реальное время"""
+    """Инициализировать все сервисы: БД, Redis, WebSocket,
+    уведомления + реальное время"""
     print("🔧 Initializing services...")
 
     try:
