@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Validation helpers for various parts of the project."""
 
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 def validate_trading_pair_symbol(symbol: str) -> bool:
@@ -62,6 +62,30 @@ def validate_rsi_value(value: float) -> bool:
     """RSI must be between 0 and 100."""
 
     return 0 <= value <= 100
+
+
+def validate_rsi_calculation_inputs(prices: List[float], period: int) -> bool:
+    """Validate inputs for RSI calculation."""
+
+    return 2 <= period <= 100 and len(prices) >= period + 1 and all(p > 0 for p in prices)
+
+
+def validate_ema_calculation_inputs(prices: List[float], period: int) -> bool:
+    """Validate inputs for EMA calculation."""
+
+    return period > 0 and len(prices) >= period and all(p > 0 for p in prices)
+
+
+def validate_indicator_performance(time_ms: int, target_ms: int) -> bool:
+    """Check that indicator calculation meets time target."""
+
+    return time_ms <= target_ms
+
+
+def validate_real_time_processing_result(result: Dict[str, Any]) -> bool:
+    """Ensure result of real-time processing contains timing info."""
+
+    return "processing_time_ms" in result
 
 
 def validate_binance_kline_data_detailed(data: Dict[str, Any]) -> bool:

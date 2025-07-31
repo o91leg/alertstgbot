@@ -25,6 +25,11 @@ class IndicatorCache:
     def _state_key(self, name: str, symbol: str, timeframe: str) -> str:
         return f"state:{name}:{symbol}:{timeframe}"
 
+    def _calc_state_key(
+        self, indicator: str, symbol: str, timeframe: str, period: int
+    ) -> str:
+        return f"state:{indicator}:{symbol}:{timeframe}:{period}"
+
     async def get_rsi(self, symbol: str, timeframe: str, period: int) -> float | None:
         value = await self.redis.get(self._rsi_key(symbol, timeframe, period))
         return float(value) if value is not None else None
@@ -32,12 +37,18 @@ class IndicatorCache:
     async def set_rsi(self, symbol: str, timeframe: str, period: int, value: float) -> None:
         await self.redis.set(self._rsi_key(symbol, timeframe, period), value, ex=self.ttl)
 
+    async def set_rsi_real_time(self, symbol: str, timeframe: str, period: int, value: float) -> None:
+        await self.redis.set(self._rsi_key(symbol, timeframe, period), value, ex=30)
+
     async def get_ema(self, symbol: str, timeframe: str, period: int) -> float | None:
         value = await self.redis.get(self._ema_key(symbol, timeframe, period))
         return float(value) if value is not None else None
 
     async def set_ema(self, symbol: str, timeframe: str, period: int, value: float) -> None:
         await self.redis.set(self._ema_key(symbol, timeframe, period), value, ex=self.ttl)
+
+    async def set_ema_real_time(self, symbol: str, timeframe: str, period: int, value: float) -> None:
+        await self.redis.set(self._ema_key(symbol, timeframe, period), value, ex=300)
 
     async def get_rsi_with_previous(
         self, symbol: str, timeframe: str, period: int
@@ -62,6 +73,40 @@ class IndicatorCache:
         key = self._state_key(name, symbol, timeframe)
         data = await self.redis.get(key)
         return json.loads(data) if data else None
+
+    async def save_calculation_state(
+        self,
+        indicator: str,
+        symbol: str,
+        timeframe: str,
+        period: int,
+        state: Dict[str, Any],
+        ttl: int | None = None,
+    ) -> None:
+        key = self._calc_state_key(indicator, symbol, timeframe, period)
+        await self.redis.set(key, json.dumps(state), ex=ttl or self.state_ttl)
+
+    async def get_calculation_state(
+        self, indicator: str, symbol: str, timeframe: str, period: int
+    ) -> Dict[str, Any] | None:
+        key = self._calc_state_key(indicator, symbol, timeframe, period)
+        data = await self.redis.get(key)
+        return json.loads(data) if data else None
+
+    async def get_indicators_batch(
+        self, keys: Dict[str, Tuple[str, str, int]]
+    ) -> Dict[str, float | None]:
+        pipeline = self.redis.pipeline()
+        for name, (symbol, timeframe, period) in keys.items():
+            if name == "rsi":
+                pipeline.get(self._rsi_key(symbol, timeframe, period))
+            else:
+                pipeline.get(self._ema_key(symbol, timeframe, period))
+        values = await pipeline.execute()
+        return {
+            key: (float(val) if val is not None else None)
+            for key, val in zip(keys.keys(), values)
+        }
 
     async def invalidate_indicators(self, symbol: str, timeframe: str) -> None:
         pattern = f"*:{symbol}:{timeframe}*"
