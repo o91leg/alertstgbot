@@ -9,32 +9,45 @@ import asyncio
 import signal
 import sys
 from typing import Optional
-from contextlib import asynccontextmanager
 
-# Основные импорты будут добавлены в следующих блоках
-# Пока создаем базовую структуру
+from aiogram import Bot, Dispatcher
+
+from bot.handlers.add_pair.add_pair_handler import register_add_pair_handlers
+from bot.handlers.my_pairs.my_pairs_handler import register_my_pairs_handlers
+from bot.handlers.remove_pair_handler import register_remove_pair_handlers
+from bot.handlers.start_handler import register_start_handlers, stream_manager as start_stream_manager
+from bot.middlewares.database_mw import DatabaseMiddleware
+from config.bot_config import BotConfig
+from services.websocket.stream_manager import StreamManager
 
 # Глобальные переменные для сервисов
-bot: Optional[object] = None
-dp: Optional[object] = None
-stream_manager: Optional[object] = None
+bot: Optional[Bot] = None
+dp: Optional[Dispatcher] = None
+stream_manager: Optional[StreamManager] = None
 telegram_sender: Optional[object] = None
 real_time_processor: Optional[object] = None
 performance_monitor: Optional[object] = None
 
+stream_manager = start_stream_manager
 
-async def create_bot() -> object:
+
+async def create_bot() -> Bot:
     """Создать и настроить экземпляр Telegram бота"""
-    print("🤖 Creating bot instance...")
-    # Будет реализовано в следующих блоках
-    return None
+
+    cfg = BotConfig()
+    return Bot(cfg.bot_token, parse_mode="HTML")
 
 
-async def setup_dispatcher() -> object:
+async def setup_dispatcher(bot: Bot) -> Dispatcher:
     """Настроить диспетчер и зарегистрировать все обработчики"""
-    print("⚙️ Setting up dispatcher...")
-    # Будет реализовано в следующих блоках
-    return None
+
+    dispatcher = Dispatcher()
+    dispatcher.message.middleware(DatabaseMiddleware())
+    register_start_handlers(dispatcher)
+    register_add_pair_handlers(dispatcher)
+    register_my_pairs_handlers(dispatcher)
+    register_remove_pair_handlers(dispatcher)
+    return dispatcher
 
 
 def validate_application_config() -> None:
@@ -112,7 +125,7 @@ async def main() -> None:
         # Создание бота и диспетчера
         global bot, dp
         bot = await create_bot()
-        dp = await setup_dispatcher()
+        dp = await setup_dispatcher(bot)
 
         # Инициализация всех сервисов
         await init_services()

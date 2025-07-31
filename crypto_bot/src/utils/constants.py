@@ -2,6 +2,16 @@ from __future__ import annotations
 
 from typing import Dict, List
 
+# Common emoji used across the bot interface
+EMOJI: Dict[str, str] = {
+    "add": "➕",
+    "pairs": "📊",
+    "remove": "❌",
+    "settings": "⚙️",
+    "back": "🔙",
+    "real_time": "⚡",
+}
+
 EMA_PERIODS: List[int] = [20, 50, 100, 200]
 
 PERFORMANCE_ALERT_THRESHOLDS = {"warning": 1.5, "critical": 2.0}
