@@ -1,0 +1,32 @@
+# Основные зависимости
+aigram==3.4.1
+sqlalchemy[asyncio]==2.0.25
+asyncpg==0.29.0
+redis[hiredis]==5.0.1
+websockets==12.0
+pydantic-settings==2.1.0
+structlog==23.2.0
+python-dotenv==1.0.0
+
+# Математические библиотеки для индикаторов
+numpy==1.26.3
+pandas==2.1.4
+
+# HTTP клиенты
+aiohttp==3.9.1
+httpx==0.26.0
+
+# Производительность
+uvloop==0.19.0
+orjson==3.9.10
+
+# Тестирование и разработка
+pytest==7.4.4
+pytest-asyncio==0.23.2
+black==23.12.1
+flake8==7.0.0
+mypy==1.8.0
+
+# Дополнительные утилиты
+click==8.1.7
+rich==13.7.0
