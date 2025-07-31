@@ -2,8 +2,9 @@ from __future__ import annotations
 
 """Pydantic settings for bot configuration."""
 
-from typing import Dict, List
+from typing import Dict, List, Any
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 
 
 class BotConfig(BaseSettings):
@@ -22,6 +23,7 @@ class BotConfig(BaseSettings):
     max_real_time_pairs: int = 20
     notification_rate_limit: int = 10
 
+    #default_timeframes: List[str] = ["1m", "5m", "15m", "1h", "4h", "1d"]
     default_pair: str = "BTCUSDT"
 
     rsi_period: int = 14
@@ -30,15 +32,35 @@ class BotConfig(BaseSettings):
     rsi_overbought_normal: float = 70
     rsi_overbought_strong: float = 80
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"  # Игнорировать лишние поля в .env
-
-    # Helper methods
-    def get_default_timeframes(self) -> List[str]:
-        """Возвращает дефолтные таймфреймы"""
+    @field_validator('default_timeframes', mode='before')
+    @classmethod
+    def parse_default_timeframes(cls, v: Any) -> List[str]:
+        """Parse timeframes from string or list"""
+        if isinstance(v, list):
+            return v
+        if isinstance(v, str):
+            # Try to parse as JSON first
+            try:
+                import json
+                parsed = json.loads(v)
+                if isinstance(parsed, list):
+                    return parsed
+            except:
+                pass
+            # If not JSON, parse as comma-separated
+            return [t.strip() for t in v.split(',') if t.strip()]
+        # Return default if nothing works
         return ["1m", "5m", "15m", "1h", "4h", "1d"]
 
+    class Config:
+        env_file = ".env"
+        env_file_encoding = 'utf-8'
+        # This is important - don't validate assignment after init
+        validate_assignment = False
+        # Ignore extra fields in .env
+        extra = 'ignore'
+
+    # Helper methods
     def get_rsi_zones(self) -> Dict[str, float]:
         return {
             "oversold_strong": self.rsi_oversold_strong,
