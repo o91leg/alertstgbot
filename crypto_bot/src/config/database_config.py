@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 """Database configuration settings."""
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 
 class DatabaseConfig(BaseSettings):

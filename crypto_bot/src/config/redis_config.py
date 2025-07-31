@@ -2,7 +2,8 @@ from __future__ import annotations
 
 """Redis cache configuration."""
 
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 
 class RedisConfig(BaseSettings):

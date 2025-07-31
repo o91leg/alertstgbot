@@ -2,7 +2,8 @@ from __future__ import annotations
 
 """Configuration for Binance API and WebSocket settings."""
 
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 
 class BinanceConfig(BaseSettings):
